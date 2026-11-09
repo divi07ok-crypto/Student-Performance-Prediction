@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #101b3d, #294b91);
+            padding: 20px;
+        }
+
+        .register-box {
+            width: 420px;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1d3266;
+            margin-bottom: 8px;
+        }
+
+        p {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin: 13px 0 6px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 22px;
+            background: #3158a5;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        a {
+            color: #3158a5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-box">
+        <h2>Student Registration</h2>
+        <p>Create your student account</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <p style="color: red; margin: 10px 0;">
+            {{ message }}
+        </p>
+    {% endfor %}
+{% endwith %}
+
+        <form method="POST" action="/register">
+            <label>Student Name</label>
+            <input type="text" name="name"
+                   placeholder="Enter your name" required>
+
+            <label>Student ID</label>
+            <input type="text" name="student_id"
+                   placeholder="Enter your student ID" required>
+
+            <label>Email Address</label>
+            <input type="email" name="email"
+                   placeholder="Enter your email" required>
+
+            <label>Password</label>
+            <input type="password" name="password"
+                   placeholder="Create password" required>
+
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password"
+                   placeholder="Confirm password" required>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="login">
+            Already have an account?
+            <a href="/login">Login</a>
+        </div>
+    </div>
+</body>
+</html>

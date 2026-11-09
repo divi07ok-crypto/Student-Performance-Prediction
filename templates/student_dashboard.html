@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard | Performance AI</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+html{scroll-behavior:smooth}
+body{background:#f4f4fc;color:#17233f}
+.sidebar{
+    width:237px;height:100vh;position:fixed;left:0;top:0;
+    background:linear-gradient(180deg,#191b49,#29265d);
+    padding:30px 24px;color:white;overflow-y:auto
+}
+.logo{font-size:21px;font-weight:800;margin-bottom:8px}
+.logo span{color:#a18aff}
+.tagline{font-size:11px;color:#c0c0e0;margin-bottom:40px}
+.menu-heading{font-size:10px;letter-spacing:2px;color:#aaa9d0;margin:28px 0 12px 10px}
+.nav a{
+    display:block;text-decoration:none;color:#eeeaff;
+    padding:14px 13px;border-radius:10px;margin-bottom:8px;font-size:13px;
+    transition:.2s
+}
+.nav a:hover,.nav a.active{background:#4a438a;color:white}
+.nav a.logout{color:#ff9da9;margin-top:18px}
+.main{margin-left:237px;padding:30px 34px;min-height:100vh}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px}
+.header h1{font-size:25px;margin-bottom:8px}
+.header p{font-size:13px;color:#818ba5}
+.user-card{
+    display:flex;align-items:center;gap:12px;background:white;
+    padding:12px 17px;border-radius:13px;box-shadow:0 5px 20px #20204a0b
+}
+.avatar{width:38px;height:38px;background:#eeeaff;color:#6451d6;
+    border-radius:12px;display:grid;place-items:center;font-weight:bold}
+.user-card strong{font-size:13px}
+.user-card small{display:block;color:#929ab0;font-size:12px;margin-top:5px}
+.welcome{
+    padding:30px;border-radius:17px;color:white;margin-bottom:23px;
+    background:linear-gradient(110deg,#5143b9,#8a70ed);
+    box-shadow:0 10px 25px #6551c52b
+}
+.welcome h2{font-size:21px;margin-bottom:10px}
+.welcome p{font-size:13px;color:#f0edff}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-bottom:23px}
+.card{
+    background:white;border-radius:16px;padding:22px;
+    box-shadow:0 5px 22px #24245b09;border:1px solid #eeedf8
+}
+.stat-card{min-height:145px}
+.stat-top{display:flex;justify-content:space-between;align-items:center}
+.stat-label{font-size:12px;color:#818ba5}
+.stat-icon{width:39px;height:39px;background:#f0edff;color:#6754d8;
+    border-radius:12px;display:grid;place-items:center;font-size:18px}
+.stat-value{font-size:29px;font-weight:750;margin-top:15px}
+.stat-note{font-size:11px;color:#929bb0;margin-top:7px}
+.section-title{font-size:16px;font-weight:700;margin-bottom:17px}
+.attendance-card{margin-bottom:23px;border-left:4px solid #e75b66}
+.attendance-card.good-alert{border-left-color:#20b77c}
+.attendance-label{font-size:10px;color:#818ba5;letter-spacing:.5px;margin:18px 0 10px}
+.attendance-number{font-size:29px;color:#e34c5b;font-weight:750}
+.attendance-number.good-number{color:#20a979}
+.attendance-status{font-size:14px;font-weight:bold;margin-top:10px}
+.attendance-message{font-size:12px;color:#78839e;margin-top:10px;line-height:1.7}
+.required{font-size:11px;color:#6855d8;font-weight:bold;margin-top:12px}
+.student-details{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:17px}
+.detail-box{background:#f8f8fd;border:1px solid #edecf7;padding:15px;border-radius:10px}
+.detail-box small{font-size:9px;color:#818ba5;letter-spacing:1px}
+.detail-box strong{display:block;font-size:12px;margin-top:9px;word-break:break-word}
+.content-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:19px;margin-bottom:23px}
+.form-description{font-size:12px;color:#8a94aa;margin-top:-8px;margin-bottom:20px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.field label{display:block;font-size:12px;color:#44516d;margin-bottom:9px}
+.field input{
+    width:100%;height:43px;border:1px solid #e0e2f0;border-radius:9px;
+    padding:0 13px;font-size:13px;outline:none;background:#fbfbfe
+}
+.field input:focus{border-color:#7461df;box-shadow:0 0 0 3px #eeeaff}
+.submit-btn{
+    width:100%;border:0;border-radius:9px;padding:14px;margin-top:18px;
+    background:linear-gradient(100deg,#5142b8,#8a70ed);color:white;
+    font-weight:bold;font-size:12px;cursor:pointer
+}
+.submit-btn:hover{opacity:.9}
+.prediction-result{
+    background:#f4f0ff;border:1px solid #e4dcff;border-radius:12px;
+    padding:17px;margin-top:17px
+}
+.prediction-result h3{font-size:16px;color:#5947c5;margin-bottom:12px}
+.prediction-result p{font-size:12px;line-height:1.8;margin-bottom:7px}
+.prediction-result ul{padding-left:20px;font-size:12px;color:#63708b;line-height:1.9}
+.chart-area{height:300px;position:relative}
+.chart-description{font-size:12px;color:#8a94aa;margin-top:-8px;margin-bottom:12px}
+.planner-card{margin-bottom:23px;border:1px solid #e5ddff}
+.planner-heading{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.planner-icon{width:43px;height:43px;background:#f0edff;border-radius:12px;
+    display:grid;place-items:center;color:#6855d8;font-size:19px}
+.planner-heading h2{font-size:16px}
+.planner-heading p{font-size:11px;color:#929bb0;margin-top:5px}
+.planner-intro{font-size:12px;color:#818ba5;line-height:1.7;margin:14px 0 17px}
+.task{
+    border:1px solid #e9e9f3;border-radius:12px;padding:18px;
+    margin-bottom:12px
+}
+.task h3{font-size:14px;margin-bottom:12px}
+.task p{font-size:12px;color:#78839e;line-height:1.7}
+.priority{float:right;padding:7px 11px;border-radius:20px;
+    background:#fff0f0;color:#e34c5b;font-size:10px;font-weight:bold}
+.priority.medium{background:#fff5e7;color:#d88a23}
+.target{display:inline-block;background:#f0edff;color:#6855d8;
+    padding:6px 10px;border-radius:7px;font-size:10px;margin-top:10px}
+.planner-foot{font-size:10px;color:#8a94aa;margin-top:16px;line-height:1.6}
+.history-card{margin-bottom:25px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:750px}
+th,td{text-align:left;padding:15px 12px;border-bottom:1px solid #edecf5;font-size:11px}
+th{background:#fafaff;color:#78839e;font-weight:500}
+td{color:#56627c}
+.result-good{color:#159b60;font-weight:bold}
+.result-average{color:#d18a16;font-weight:bold}
+.result-poor{color:#df5059;font-weight:bold}
+.risk-text{font-weight:bold;color:#46516c}
+.empty{text-align:center;padding:24px;color:#8993a9}
+.footer{text-align:center;color:#969eb1;font-size:11px;padding:15px}
+@media(max-width:1050px){
+    .sidebar{width:205px;padding:25px 17px}
+    .main{margin-left:205px;padding:25px}
+    .content-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+    .sidebar{position:relative;width:100%;height:auto}
+    .main{margin-left:0;padding:18px}
+    .stats{grid-template-columns:1fr}
+    .student-details{grid-template-columns:1fr}
+    .header{align-items:flex-start;gap:15px;flex-direction:column}
+    .form-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="logo">PERFORMANCE<span>AI</span></div>
+    <div class="tagline">STUDENT ANALYTICS PORTAL</div>
+
+    <div class="menu-heading">MAIN MENU</div>
+    <nav class="nav">
+        <a href="#dashboard" class="active">▦ &nbsp; Dashboard</a>
+        <a href="#prediction-form">✦ &nbsp; Predict Performance</a>
+        <a href="#analytics">◎ &nbsp; Analytics</a>
+        <a href="#attendance-alert">📢 &nbsp; Attendance Alert</a>
+        <a href="#planner">✧ &nbsp; Improvement Planner</a>
+        <a href="#history">▤ &nbsp; My History</a>
+    </nav>
+
+    <div class="menu-heading">ACCOUNT</div>
+    <nav class="nav">
+        <a href="{{ url_for('logout') }}" class="logout">↪ &nbsp; Logout</a>
+    </nav>
+</aside>
+
+<main class="main" id="dashboard">
+
+    <header class="header">
+        <div>
+            <h1>Student Dashboard</h1>
+            <p>Track your academic progress and improve your performance.</p>
+        </div>
+        <div class="user-card">
+            <div class="avatar">{{ (session.get('user','S') or 'S')[0]|upper }}</div>
+            <div>
+                <strong>{{ session.get('user','Student') }}</strong>
+                <small>Student Account</small>
+            </div>
+        </div>
+    </header>
+
+    <section class="welcome">
+        <h2>Welcome back, {{ session.get('user','Student') }}! 👋</h2>
+        <p>Check your academic performance, understand your risk level, and take steps towards better results.</p>
+    </section>
+
+    <section class="stats">
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Total Predictions</span>
+                <span class="stat-icon">▤</span>
+            </div>
+            <div class="stat-value">{{ stats.total|default(0) }}</div>
+            <div class="stat-note">Your prediction records</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Good Performance</span>
+                <span class="stat-icon">↗</span>
+            </div>
+            <div class="stat-value">{{ stats.good|default(0) }}</div>
+            <div class="stat-note">Good prediction results</div>
+        </div>
+
+        <div class="card stat-card">
+            <div class="stat-top">
+                <span class="stat-label">Average Marks</span>
+                <span class="stat-icon">★</span>
+            </div>
+            {% set average_marks = namespace(total=0,count=0) %}
+            {% for item in growth_history|default([]) %}
+                {% set average_marks.total = average_marks.total + (item.previous_marks|default(0)|float) + (item.internal_marks|default(0)|float) %}
+                {% set average_marks.count = average_marks.count + 2 %}
+            {% endfor %}
+            <div class="stat-value">
+                {% if average_marks.count > 0 %}
+                    {{ "%.2f"|format(average_marks.total / average_marks.count) }}%
+                {% else %}
+                    0%
+                {% endif %}
+            </div>
+            <div class="stat-note">Average of your recorded marks</div>
+        </div>
+    </section>
+
+    <section class="card attendance-card {% if latest and latest.attendance|float >= 75 %}good-alert{% endif %}" id="attendance-alert">
+        <h2 class="section-title">📢 Smart Attendance Alert</h2>
+
+        {% if latest %}
+            <div class="attendance-label">YOUR CURRENT ATTENDANCE</div>
+            <div class="attendance-number {% if latest.attendance|float >= 75 %}good-number{% endif %}">
+                {{ "%.1f"|format(latest.attendance|float) }}%
+            </div>
+
+            <div class="attendance-status">
+                {% if latest.attendance|float >= 75 %}
+                    Good Attendance
+                {% else %}
+                    Low Attendance
+                {% endif %}
+            </div>
+
+            <p class="attendance-message">
+                Hi {{ session.get('user','Student') }},
+                {% if latest.attendance|float >= 75 %}
+                    your attendance meets the recommended 75% requirement. Keep maintaining it!
+                {% else %}
+                    your attendance is below 75%. Please attend classes regularly to improve it.
+                {% endif %}
+            </p>
+            <div class="required">Required attendance: 75%</div>
+        {% else %}
+            <p class="attendance-message">Make your first prediction to view your attendance status.</p>
+        {% endif %}
+
+        <div class="student-details">
+            <div class="detail-box">
+                <small>STUDENT NAME</small>
+                <strong>{{ session.get('user','Student') }}</strong>
+            </div>
+            <div class="detail-box">
+                <small>STUDENT ID</small>
+                <strong>{{ session.get('student_id','Not available') }}</strong>
+            </div>
+            <div class="detail-box">
+                <small>STUDENT EMAIL</small>
+                <strong>{{ session.get('email','Not available') }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <section class="content-grid">
+
+        <div class="card" id="prediction-form">
+            <h2 class="section-title">✦ Predict Your Performance</h2>
+            <p class="form-description">Enter your academic details to get an ML-based prediction.</p>
+
+            <form action="{{ url_for('predict') }}" method="POST">
+                <div class="form-grid">
+                    <div class="field">
+                        <label>Attendance (%)</label>
+                        <input type="number" name="attendance" min="0" max="100" step="0.1" placeholder="Example: 85" value="{{ input_values.attendance if input_values else '' }}" required>
+                    </div>
+                    <div class="field">
+                        <label>Daily Study Hours</label>
+                        <input type="number" name="study_hours" min="0" max="24" step="0.1" placeholder="Example: 4" value="{{ input_values.study_hours if input_values else '' }}" required>
+                    </div>
+                    <div class="field">
+                        <label>Previous Marks</label>
+                        <input type="number" name="previous_marks" min="0" max="100" step="0.1" placeholder="Example: 75" value="{{ input_values.previous_marks if input_values else '' }}" required>
+                    </div>
+                    <div class="field">
+                        <label>Internal Marks</label>
+                        <input type="number" name="internal_marks" min="0" max="100" step="0.1" placeholder="Example: 80" value="{{ input_values.internal_marks if input_values else '' }}" required>
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">Analyze My Performance →</button>
+            </form>
+
+            {% if prediction %}
+            <div class="prediction-result">
+                <h3>Prediction Result: {{ prediction }}</h3>
+                <p><strong>Academic Risk:</strong> {{ risk|default('Not available') }}</p>
+
+                {% if suggestions %}
+                    <p><strong>Improvement Suggestions</strong></p>
+                    <ul>
+                    {% for suggestion in suggestions %}
+                        <li>{{ suggestion }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+
+                {% if explanation %}
+                    <p><strong>Analysis:</strong> {{ explanation }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="card" id="analytics">
+            <h2 class="section-title">Performance Analytics</h2>
+            <p class="chart-description">Your prediction distribution</p>
+            <div class="chart-area">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="card planner-card" id="planner">
+        <div class="planner-heading">
+            <div class="planner-icon">✧</div>
+            <div>
+                <h2>Smart Student Improvement Planner</h2>
+                <p>Personalized academic improvement recommendations</p>
+            </div>
+        </div>
+
+        <p class="planner-intro">
+            Based on your latest saved performance prediction, this planner identifies areas that need attention and provides practical steps to improve your academic performance.
+        </p>
+
+        <div class="task">
+            <span class="priority">High Priority</span>
+            <h3>1. Improve Attendance</h3>
+            <p>Attend classes regularly and maintain at least 75% attendance.</p>
+            <span class="target">Target: 75% or above</span>
+        </div>
+
+        <div class="task">
+            <span class="priority medium">Medium Priority</span>
+            <h3>2. Move Towards Good Performance</h3>
+            <p>Practise additional questions and take weekly self-assessment tests.</p>
+            <span class="target">Focus: Regular practice</span>
+        </div>
+
+        <p class="planner-foot">
+            Recommendations are generated using predefined academic rules based on your latest saved prediction. Follow these suggestions consistently and record new predictions to refresh your improvement plan.
+        </p>
+    </section>
+
+    <section class="card history-card" id="history">
+        <h2 class="section-title">Recent Prediction History</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Attendance</th>
+                        <th>Study Hours</th>
+                        <th>Previous Marks</th>
+                        <th>Internal Marks</th>
+                        <th>Prediction</th>
+                        <th>Academic Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history|default([]) %}
+                    <tr>
+                        <td>{{ item.date|default('—') }}</td>
+                        <td>{{ item.attendance|default('—') }}%</td>
+                        <td>{{ item.study_hours|default('—') }}</td>
+                        <td>{{ item.previous_marks|default('—') }}</td>
+                        <td>{{ item.internal_marks|default('—') }}</td>
+                        <td>
+                            {% if item.prediction|default('')|lower == 'good' %}
+                                <span class="result-good">{{ item.prediction }}</span>
+                            {% elif item.prediction|default('')|lower == 'poor' %}
+                                <span class="result-poor">{{ item.prediction }}</span>
+                            {% else %}
+                                <span class="result-average">{{ item.prediction|default('—') }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="risk-text">
+                            {% if item.attendance|default(0)|float < 60 or item.previous_marks|default(0)|float < 40 %}
+                                High Risk
+                            {% elif item.attendance|default(0)|float < 75 or item.previous_marks|default(0)|float < 60 %}
+                                Medium Risk
+                            {% else %}
+                                Low Risk
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="empty">No prediction records available. Make your first prediction!</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="footer">
+        © 2026 Performance AI | Student Performance Prediction
+    </div>
+
+</main>
+
+<script>
+const goodCount = {{ stats.good|default(0)|tojson }};
+const averageCount = {{ stats.average|default(0)|tojson }};
+const poorCount = {{ stats.poor|default(0)|tojson }};
+
+new Chart(document.getElementById('performanceChart'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Good', 'Average', 'Poor'],
+        datasets: [{
+            data: [goodCount, averageCount, poorCount],
+            backgroundColor: ['#20b77c', '#f5aa3c', '#e85b68'],
+            borderWidth: 0,
+            hoverOffset: 7
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '58%',
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 18,
+                    font: {size: 11}
+                }
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

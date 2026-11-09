@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Login - Student Performance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #101b3d, #3158a5);
+            padding: 20px;
+        }
+
+        .container {
+            width: 850px;
+            max-width: 100%;
+            background: white;
+            padding: 45px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #1d3266;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 35px;
+        }
+
+        .login-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .login-card {
+            padding: 35px 20px;
+            border: 1px solid #dce4f5;
+            border-radius: 15px;
+            background: #f8faff;
+            text-decoration: none;
+            color: #263b70;
+            transition: 0.3s;
+        }
+
+        .login-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 25px rgba(49,88,165,0.15);
+            border-color: #3158a5;
+        }
+
+        .login-icon {
+            font-size: 48px;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 22px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #3158a5;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .register {
+            margin-top: 30px;
+            color: #666;
+        }
+
+        .register a {
+            color: #3158a5;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        @media(max-width: 600px) {
+            .login-options {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Student Performance Prediction</h1>
+
+        <p class="subtitle">
+            Please select your account type to continue
+        </p>
+
+        <div class="login-options">
+
+            <a href="/student-login" class="login-card">
+                <div class="login-icon">🎓</div>
+                <h2>Student Login</h2>
+                <p class="description">
+                    Access your performance dashboard,
+                    predictions and academic improvement suggestions.
+                </p>
+                <span class="button">Login as Student</span>
+            </a>
+
+            <a href="/staff-login" class="login-card">
+                <div class="login-icon">👨‍🏫</div>
+                <h2>Staff Login</h2>
+                <p class="description">
+                    Monitor student performance,
+                    view academic risk and download reports.
+                </p>
+                <span class="button">Login as Staff</span>
+            </a>
+
+        </div>
+
+        <p class="register">
+            New Student?
+            <a href="/register">Register Here</a>
+        </p>
+
+    </div>
+
+</body>
+</html>
