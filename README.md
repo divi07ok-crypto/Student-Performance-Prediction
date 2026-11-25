@@ -70,3 +70,13 @@ Divika M
 
 ## Project Type
 Machine Learning Web Application
+## Project Screenshots
+
+### Login Page
+![Login](Screenshot%202026-11-25%20161527.png)
+
+### Student Dashboard
+![Dashboard](Screenshot%202026-11-25%20161710.png)
+
+### Prediction Result
+![Prediction](Screenshot%202026-11-25%20161737.png)
